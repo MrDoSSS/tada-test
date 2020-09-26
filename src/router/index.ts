@@ -1,11 +1,26 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Home from '@/views/Home.vue'
+import ChatLayout from '@/layouts/Chat.vue'
+import { guardPipeline } from './guardPipeline'
+import { store } from '@/store'
 
-const routes: Array<RouteRecordRaw> = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    component: ChatLayout,
+    children: [
+      {
+        path: 'chat-index',
+        component: () => import('@/views/chat/Index.vue')
+      }
+    ],
+    meta: {
+      guard: ['authorized']
+    }
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/Login.vue')
   }
 ]
 
@@ -14,4 +29,6 @@ const router = createRouter({
   routes
 })
 
-export default router
+router.beforeEach((to, from, next) => guardPipeline({ to, from, next, store })())
+
+export { router }

@@ -1,8 +1,11 @@
 import { createStore } from 'vuex'
+import * as modules from './modules'
 
-export default createStore({
+const store = createStore<Tada.RootState>({
   state: {},
   mutations: {},
   actions: {},
-  modules: {}
+  modules
 })
+
+export { store } 
