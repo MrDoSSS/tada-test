@@ -29,7 +29,3 @@ export type Guard = (context: Context) => void
 export interface GuardPipeline {
   (context: Context, middleware?: guards[], index?: number): (params?: NextParams) => void
 }
-
-export type RouteParams = { Vue: VueConstructor, store: AppStore }
-
-export type RouteCallback = (params: RouteParams) => VueRouter

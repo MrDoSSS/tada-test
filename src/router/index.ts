@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import ChatLayout from '@/layouts/Chat.vue'
-import { guardPipeline } from './guardPipeline'
+import { guardPipeline } from './guard-pipeline'
 import { store } from '@/store'
 
 const routes: RouteRecordRaw[] = [
@@ -9,7 +9,8 @@ const routes: RouteRecordRaw[] = [
     component: ChatLayout,
     children: [
       {
-        path: 'chat-index',
+        path: '',
+        name: 'chat-index',
         component: () => import('@/views/chat/Index.vue')
       }
     ],
@@ -20,7 +21,10 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/Login.vue')
+    component: () => import('@/views/Login.vue'),
+    meta: {
+      guard: ['unauthorized']
+    }
   }
 ]
 

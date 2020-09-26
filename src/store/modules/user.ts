@@ -1,6 +1,8 @@
 import { Module } from 'vuex'
+import * as storageUtils from '@/utils/local-storage'
+import isEmpty from 'lodash/isEmpty'
 
-const initProfile = (username: string): Tada.UserProfile => ({
+const initProfile = ({ username }: Tada.UserProfile): Tada.UserProfile => ({
   username
 })
 
@@ -19,10 +21,16 @@ export const user: Module<Tada.UserState, Tada.RootState> = {
       state.isAuth = payload
     },
     SET_PROFILE (state, payload) {
-      state.profile = initProfile(payload)
+      state.profile = isEmpty(payload) ? undefined : initProfile(payload)
+      storageUtils.set('profile', state.profile)
     }
   },
   actions: {
+    init ({ dispatch }) {
+      const profile = storageUtils.get('profile')
+      if (!profile) return
+      dispatch('login', profile)
+    },
     login ({ commit }, payload) {
       commit('SET_PROFILE', payload)
       commit('SET_IS_AUTH', true)
