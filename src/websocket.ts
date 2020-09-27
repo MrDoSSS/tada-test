@@ -7,15 +7,15 @@ class WsClient {
   connect (url: string) {
     this.websocket = new WebSocket(url)
 
-    this.websocket.onopen = () => this.status.value = 'opened'
-    this.websocket.onerror = () => this.status.value = 'error'
-    this.websocket.onclose = () => this.status.value = 'closed'
+    this.on('open', () => this.status.value = 'opened')
+    this.on('error', () => this.status.value = 'error')
+    this.on('close', () => this.status.value = 'closed')
   }
 
-  on (cb: (this: WebSocket, event: Event & { data?: string }) => any): boolean {
+  on (event: string, cb: (event: Event & { data?: string }) => any): boolean {
     if (!this.websocket) return false
 
-    this.websocket.onmessage = cb
+    this.websocket.addEventListener(event, cb)
 
     return true
   }

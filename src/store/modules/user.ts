@@ -41,7 +41,6 @@ export const user: Module<Tada.UserState, Tada.RootState> = {
       const { chat } = await import('./chat')
       this.registerModule('chat', chat)
 
-      wsClient.connect(`wss://nane.tada.team/ws?username=${getters['profile'].username}`)
       dispatch('chat/init', null, { root: true })
     },
     logout ({ commit }) {

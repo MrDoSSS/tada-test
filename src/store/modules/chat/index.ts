@@ -11,8 +11,10 @@ export const chat: Module<Tada.ChatState, Tada.RootState> = {
     hasRooms: state => !isEmpty(state.rooms.items)
   },
   actions: {
-    init ({ getters, dispatch }) {
-      wsClient.on((e) => {
+    init ({ getters, dispatch, rootGetters }) {
+      wsClient.connect(encodeURI(`wss://nane.tada.team/ws?username=${rootGetters['user/profile'].username}`))
+
+      wsClient.on('message', (e) => {
         if (!e.data) return
 
         const data: Tada.Message = JSON.parse(e.data)
@@ -31,6 +33,11 @@ export const chat: Module<Tada.ChatState, Tada.RootState> = {
         } else {
           dispatch('rooms/add', room)
         }
+      })
+
+      wsClient.on('close', (e) => {
+        console.log(e)
+        dispatch('init')
       })
     },
   }
