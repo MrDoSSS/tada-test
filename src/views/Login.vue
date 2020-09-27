@@ -37,7 +37,9 @@ export default {
     const maxUsernameLength = computed(() => store.getters['settings/maxUsernameLength'])
 
     const login = async () => {
-      await store.dispatch('user/login', { username })
+      if (!username.value) return
+
+      await store.dispatch('user/login', { username: username.value })
       router.push({ name: 'chat-index' })
     }
 

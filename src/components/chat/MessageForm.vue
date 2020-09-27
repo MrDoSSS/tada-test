@@ -2,6 +2,7 @@
   <form
     class="bg-light"
     @submit.prevent="send"
+    @keydown.enter="e => e.which === 13 && !e.shiftKey ? send() : true"
   >
     <div class="input-group">
       <textarea
@@ -46,9 +47,9 @@ export default {
     const text = ref('')
 
     const send = () => {
-      if (!text.value) return
+      if (!text.value.trim()) return
 
-      store.dispatch('chat/messages/send', { text: text.value, room: props.roomName })
+      store.dispatch('chat/messages/send', { text: text.value.trim(), room: props.roomName })
       text.value = ''
     }
 

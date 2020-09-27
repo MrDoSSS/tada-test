@@ -1,27 +1,21 @@
+import { ref } from 'vue'
+
 class WsClient {
   websocket: WebSocket | undefined
+  status = ref('pending')
 
   connect (url: string) {
     this.websocket = new WebSocket(url)
+
+    this.websocket.onopen = () => this.status.value = 'opened'
+    this.websocket.onerror = () => this.status.value = 'error'
+    this.websocket.onclose = () => this.status.value = 'closed'
   }
 
-  on (event: 'open' | 'close' | 'error' | 'message', cb: (this: WebSocket, event: Event & { data?: string }) => any): boolean {
+  on (cb: (this: WebSocket, event: Event & { data?: string }) => any): boolean {
     if (!this.websocket) return false
 
-    switch (event) {
-      case 'open':
-        this.websocket.onopen = cb
-        break
-      case 'close':
-        this.websocket.onclose = cb
-        break
-      case 'error':
-        this.websocket.onerror = cb
-        break
-      case 'message':
-        this.websocket.onmessage = cb
-        break
-    }
+    this.websocket.onmessage = cb
 
     return true
   }
@@ -32,3 +26,11 @@ class WsClient {
 }
 
 export const wsClient = new WsClient()
+
+export const useWsClient = () => {
+  return {
+    on: wsClient.on,
+    send: wsClient.send,
+    status: wsClient.status
+  }
+}

@@ -12,7 +12,7 @@ export const chat: Module<Tada.ChatState, Tada.RootState> = {
   },
   actions: {
     init ({ getters, dispatch }) {
-      wsClient.on('message', (e) => {
+      wsClient.on((e) => {
         if (!e.data) return
 
         const data: Tada.Message = JSON.parse(e.data)

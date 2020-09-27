@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 import { initStore } from './store'
 import { initRouter } from './router'
+import { networkStatus } from '@/plugins/network-status'
+
 import App from './App.vue'
 
 import 'popper.js'
@@ -13,6 +15,7 @@ initStore().then((store) => {
   createApp(App)
     .use(store)
     .use(router)
+    .use(networkStatus)
     .mount('#app')
 })
 
