@@ -4,9 +4,6 @@ export const authorized: Tada.Guard = ({ to, next, store }) => {
   } else {
     next({
       name: 'login',
-      query: {
-        redirect: to.name
-      },
       stopPipeline: true
     })
   }

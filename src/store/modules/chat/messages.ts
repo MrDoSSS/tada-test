@@ -1,5 +1,7 @@
 import { isEmpty } from 'lodash'
 import { Module } from 'vuex'
+import { wsClient } from '@/websocket'
+import { generateUUID } from '@/utils/uuid'
 
 export const messages: Module<Tada.MessagesState, Tada.RootState> = {
   namespaced: true,
@@ -11,7 +13,7 @@ export const messages: Module<Tada.MessagesState, Tada.RootState> = {
     byRoom: state => (roomName: string) => {
       return state.items.filter(msg => msg.room === roomName)
     },
-    message: (state) => (msgId: string) => {
+    byId: (state) => (msgId: string) => {
       return state.items.find((msg: Tada.Message) => msg.id === msgId)
     },
   },
@@ -21,9 +23,7 @@ export const messages: Module<Tada.MessagesState, Tada.RootState> = {
     },
     UPDATE (_, { message, payload }: { message: Tada.Message, payload: Tada.Message }) {
       for (const key in payload) {
-        if (Object.prototype.hasOwnProperty.call(message, key)) {
-          message[key] = payload[key]
-        }
+        message[key] = payload[key]
       }
     }
   },
@@ -36,6 +36,7 @@ export const messages: Module<Tada.MessagesState, Tada.RootState> = {
       if (response.ok) {
         const { result } = await response.json()
         for (const message of result) {
+          message.delivered = true
           dispatch('add', message)
         }
       }
@@ -44,9 +45,17 @@ export const messages: Module<Tada.MessagesState, Tada.RootState> = {
       commit('ADD', payload)
     },
     update ({ commit, getters }, payload: Tada.Message) {
-      const message = getters.message(payload.room, payload.id)
+      const message = getters.byId(payload.id)
 
       if (message) commit('UPDATE', { message, payload })
+    },
+    send ({ commit, rootGetters }, payload: Tada.Message) {
+      payload.id = generateUUID()
+      payload.delivered = false
+      payload.sender = rootGetters['user/profile']
+      payload.created = new Date().toJSON()
+      wsClient.send(payload)
+      commit('ADD', payload)
     }
   }
 }

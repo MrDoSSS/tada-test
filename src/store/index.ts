@@ -1,8 +1,9 @@
 import { createStore, ModuleTree } from 'vuex'
 import { user } from './modules/user'
+import { settings } from './modules/settings'
 import get from 'lodash/get'
 
-const modules: ModuleTree<Tada.RootState> = { user }
+const modules: ModuleTree<Tada.RootState> = { user, settings }
 
 const initStore = async () => {
   const store = createStore<Tada.RootState>({

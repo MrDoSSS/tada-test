@@ -12,6 +12,7 @@
         placeholder="Username"
         required
         autofocus
+        :maxlength="maxUsernameLength"
         v-model="username"
       >
       <button
@@ -22,20 +23,31 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref } from 'vue'
+<script lang="ts">
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
-const router = useRouter()
-const store = useStore()
+export default {
+  setup () {
+    const router = useRouter()
+    const store = useStore()
 
-export const username = ref('')
+    const username = ref('')
+    const maxUsernameLength = computed(() => store.getters['settings/maxUsernameLength'])
 
-export const login = async () => {
-  await store.dispatch('user/login', { username })
-  router.push({ name: 'chat-index' })
-};
+    const login = async () => {
+      await store.dispatch('user/login', { username })
+      router.push({ name: 'chat-index' })
+    }
+
+    return {
+      username,
+      maxUsernameLength,
+      login
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

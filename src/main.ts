@@ -3,7 +3,8 @@ import { initStore } from './store'
 import { initRouter } from './router'
 import App from './App.vue'
 
-import './registerServiceWorker'
+import 'popper.js'
+import 'bootstrap'
 import '@/assets/scss/index.scss'
 
 initStore().then((store) => {

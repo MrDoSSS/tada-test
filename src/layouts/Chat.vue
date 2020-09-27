@@ -7,7 +7,7 @@
             <p class="h5 mb-0 py-1">Rooms</p>
           </div>
 
-          <div class="rooms-box">
+          <div class="rooms-box d-flex flex-column justify-content-between">
             <div
               class="h-100 d-flex justify-content-center align-items-center text-uppercase text-muted"
               v-if="loading"
@@ -39,6 +39,15 @@
                 no data
               </div>
             </template>
+            <div class="w-100 dropup">
+              <button
+                class="btn btn-secondary btn-block btn-lg rounded-0"
+                data-toggle="dropdown"
+              >Create room</button>
+              <div class="dropdown-menu">
+                <NewRoomForm />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -52,28 +61,44 @@
 
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { onMounted, ref, computed } from 'vue'
 import { useStore } from 'vuex'
+import Room from '@/components/chat/Room.vue'
+import NewRoomForm from '@/components/chat/NewRoomForm.vue'
 
-export { default as Room } from '@/components/chat/Room.vue'
+export default {
+  components: {
+    Room,
+    NewRoomForm
+  },
+  setup () {
+    const store = useStore()
 
-const store = useStore()
+    const userProfile = computed(() => store.getters['user/profile'])
+    const rooms = computed(() => store.getters['chat/rooms/all'])
+    const hasRooms = computed(() => store.getters['chat/hasRooms'])
+    const loading = ref(false)
 
-export const rooms = computed(() => store.getters['chat/rooms/all'])
-export const hasRooms = computed(() => store.getters['chat/hasRooms'])
-export const loading = ref(false)
+    onMounted(async () => {
+      try {
+        loading.value = true
+        await store.dispatch('chat/rooms/fetch')
+      } catch (e) {
+        console.log(e)
+      } finally {
+        loading.value = false
+      }
+    })
 
-onMounted(async () => {
-  try {
-    loading.value = true
-    await store.dispatch('chat/rooms/fetch')
-  } catch (e) {
-    console.log(e)
-  } finally {
-    loading.value = false
+    return {
+      userProfile,
+      rooms,
+      hasRooms,
+      loading
+    }
   }
-})
+}
 
 </script>
 

@@ -1,6 +1,7 @@
 import { Module } from 'vuex'
 import * as storageUtils from '@/utils/local-storage'
 import isEmpty from 'lodash/isEmpty'
+import { wsClient } from '@/websocket'
 
 const initProfile = ({ username }: Tada.UserProfile): Tada.UserProfile => ({
   username
@@ -31,7 +32,7 @@ export const user: Module<Tada.UserState, Tada.RootState> = {
       if (!profile) return
       await dispatch('login', profile)
     },
-    async login ({ commit }, payload) {
+    async login ({ commit, getters, dispatch }, payload) {
       commit('SET_PROFILE', payload)
       commit('SET_IS_AUTH', true)
 
@@ -39,6 +40,9 @@ export const user: Module<Tada.UserState, Tada.RootState> = {
 
       const { chat } = await import('./chat')
       this.registerModule('chat', chat)
+
+      wsClient.connect(`wss://nane.tada.team/ws?username=${getters['profile'].username}`)
+      dispatch('chat/init', null, { root: true })
     },
     logout ({ commit }) {
       commit('SET_PROFILE', {})

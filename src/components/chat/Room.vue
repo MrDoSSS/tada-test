@@ -17,22 +17,29 @@
   </router-link>
 </template>
 
-<script lang="ts" setup="props">
+<script lang="ts">
 import { computed } from 'vue'
 
+export default {
+  props: {
+    name: {
+      type: String,
+      required: true
+    },
+    lastMessage: {
+      type: String,
+      required: true
+    }
+  },
+  setup (props: any) {
+    const truncatedLastMessage = computed(() => {
+      return props.lastMessage.length <= 100 ? props.lastMessage : props.lastMessage.slice(0, 100) + '...'
+    })
 
-declare const props: {
-  name: string
-  lastMessage: string
+    return {
+      truncatedLastMessage
+    }
+  }
 }
-
-export const truncatedLastMessage = computed(() => {
-  return props.lastMessage.length <= 100 ? props.lastMessage : props.lastMessage.slice(0, 100) + '...'
-})
 
 </script>
-
-<style scoped>
-.message {
-}
-</style>

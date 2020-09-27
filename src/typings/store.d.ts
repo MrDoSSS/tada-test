@@ -15,6 +15,7 @@ export interface Message {
   id?: string
   created?: string
   sender?: UserProfile
+  delivered?: boolean
   [key: string]
 }
 
@@ -26,6 +27,7 @@ export interface RawRoom {
 export interface Room {
   name: string
   lastMessage: Message
+  [key: string]
 }
 
 export interface ChatState {
@@ -41,6 +43,17 @@ export interface MessagesState {
   items: Message[]
 }
 
+export interface RawSettingsState {
+  max_message_length: number
+  max_room_title_length: number
+  max_username_length: number
+}
+
+export interface SettingsState {
+  maxMessageLength: number
+  maxRoomTitleLength: number
+  maxUsernameLength: number
+}
 
 export interface RootState {
 }

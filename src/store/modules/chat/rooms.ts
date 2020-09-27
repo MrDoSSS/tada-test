@@ -26,6 +26,13 @@ export const rooms: Module<Tada.RoomsState, Tada.RootState> = {
   mutations: {
     ADD (state, payload: Tada.RawRoom) {
       state.items.push(initRoom(payload))
+    },
+    UPDATE (_, { room, payload }: { room: Tada.Room, payload: Tada.RawRoom }) {
+      const data = initRoom(payload)
+
+      for (const key in data) {
+        room[key] = data[key]
+      }
     }
   },
   actions: {
@@ -41,6 +48,11 @@ export const rooms: Module<Tada.RoomsState, Tada.RootState> = {
     },
     add ({ commit }, payload: Tada.RawRoom) {
       commit('ADD', payload)
+    },
+    update ({ commit, getters }, payload: Tada.RawRoom) {
+      const room = getters.byName(payload.name)
+
+      if (room) commit('UPDATE', { room, payload })
     }
   }
 }
