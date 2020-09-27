@@ -1,5 +1,7 @@
 # tada-test
 
+Клиент для того самого циганского сервера.
+
 ## Project setup
 ```
 yarn install
@@ -24,6 +26,3 @@ yarn test:unit
 ```
 yarn lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
