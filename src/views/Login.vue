@@ -23,21 +23,23 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import { store } from "@/store";
-import { router } from "@/router";
+import { ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
-export const username = ref("");
+const router = useRouter()
+const store = useStore()
 
-export const login = () => {
-  store.dispatch("user/login", { username });
-  router.push({ name: "chat-index" });
+export const username = ref('')
+
+export const login = async () => {
+  await store.dispatch('user/login', { username })
+  router.push({ name: 'chat-index' })
 };
 </script>
 
 <style lang="scss" scoped>
 .login {
-  background-color: #f5f5f5;
   min-height: inherit;
 }
 

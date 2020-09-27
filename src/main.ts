@@ -1,12 +1,18 @@
 import { createApp } from 'vue'
+import { initStore } from './store'
+import { initRouter } from './router'
 import App from './App.vue'
-import './registerServiceWorker'
-import { router } from './router'
-import { store } from './store'
 
+import './registerServiceWorker'
 import '@/assets/scss/index.scss'
 
-createApp(App)
-  .use(store)
-  .use(router)
-  .mount('#app')
+initStore().then((store) => {
+  const router = initRouter(store)
+
+  createApp(App)
+    .use(store)
+    .use(router)
+    .mount('#app')
+})
+
+

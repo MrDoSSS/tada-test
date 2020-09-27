@@ -1,17 +1,21 @@
+import { AppStore } from '@/typings'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import ChatLayout from '@/layouts/Chat.vue'
 import { guardPipeline } from './guard-pipeline'
-import { store } from '@/store'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: ChatLayout,
+    component: () => import('@/layouts/Chat.vue'),
     children: [
       {
         path: '',
         name: 'chat-index',
         component: () => import('@/views/chat/Index.vue')
+      },
+      {
+        path: '/:name',
+        name: 'chat-room',
+        component: () => import('@/views/chat/Room.vue')
       }
     ],
     meta: {
@@ -28,11 +32,14 @@ const routes: RouteRecordRaw[] = [
   }
 ]
 
-const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+export const initRouter = (store: AppStore) => {
+  const router = createRouter({
+    history: createWebHistory(process.env.BASE_URL),
+    linkActiveClass: 'active',
+    routes
+  })
 
-router.beforeEach((to, from, next) => guardPipeline({ to, from, next, store })())
+  router.beforeEach((to, from, next) => guardPipeline({ to, from, next, store })())
 
-export { router }
+  return router
+}

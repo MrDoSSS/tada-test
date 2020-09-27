@@ -1,18 +1,24 @@
-import { createStore } from 'vuex'
-import * as modules from '@/store/modules'
+import { createStore, ModuleTree } from 'vuex'
+import { user } from './modules/user'
 import get from 'lodash/get'
 
-const store = createStore<Tada.RootState>({
-  state: {},
-  mutations: {},
-  actions: {},
-  modules
-})
+const modules: ModuleTree<Tada.RootState> = { user }
 
-for (const moduleName of Object.keys(modules)) {
-  if (get(modules[moduleName], 'actions.init')) {
-    store.dispatch(`${moduleName}/init`)
+const initStore = async () => {
+  const store = createStore<Tada.RootState>({
+    modules,
+    state: {},
+    mutations: {},
+    actions: {}
+  })
+
+  for (const moduleName in modules) {
+    if (get(modules[moduleName], 'actions.init')) {
+      await store.dispatch(`${moduleName}/init`)
+    }
   }
+
+  return store
 }
 
-export { store } 
+export { initStore }

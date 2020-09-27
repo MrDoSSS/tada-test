@@ -17,7 +17,7 @@ export const user: Module<Tada.UserState, Tada.RootState> = {
     profile: state => state.profile
   },
   mutations: {
-    SET_IS_AUTH (state, payload) {
+    SET_IS_AUTH (state, payload: boolean) {
       state.isAuth = payload
     },
     SET_PROFILE (state, payload) {
@@ -26,14 +26,19 @@ export const user: Module<Tada.UserState, Tada.RootState> = {
     }
   },
   actions: {
-    init ({ dispatch }) {
+    async init ({ dispatch }) {
       const profile = storageUtils.get('profile')
       if (!profile) return
-      dispatch('login', profile)
+      await dispatch('login', profile)
     },
-    login ({ commit }, payload) {
+    async login ({ commit }, payload) {
       commit('SET_PROFILE', payload)
       commit('SET_IS_AUTH', true)
+
+      if (this.hasModule('chat')) return
+
+      const { chat } = await import('./chat')
+      this.registerModule('chat', chat)
     },
     logout ({ commit }) {
       commit('SET_PROFILE', {})

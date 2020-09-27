@@ -25,6 +25,7 @@ module.exports = {
         "requireLast": false
       }
     }],
+    '@typescript-eslint/camelcase': 'off'
   },
   overrides: [
     {
