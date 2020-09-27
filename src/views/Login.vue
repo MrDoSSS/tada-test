@@ -14,6 +14,7 @@
         autofocus
         :maxlength="maxUsernameLength"
         v-model="username"
+        @keydown="onKeydown"
       >
       <button
         class="btn btn-lg btn-primary btn-block"
@@ -43,10 +44,15 @@ export default {
       router.push({ name: 'chat-index' })
     }
 
+    const onKeydown = (e: KeyboardEvent) => {
+      if (e.key === '#') e.preventDefault()
+    }
+
     return {
       username,
       maxUsernameLength,
-      login
+      login,
+      onKeydown
     }
   }
 }
